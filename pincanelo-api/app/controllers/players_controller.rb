@@ -1,7 +1,7 @@
 class PlayersController < ApplicationController
   before_action :set_player, only: %i[destroy show]
   def index
-    render json: Player.all, status: :ok
+    render json: Player.all.order(elo_rating: :desc), status: :ok
   end
 
   def show
