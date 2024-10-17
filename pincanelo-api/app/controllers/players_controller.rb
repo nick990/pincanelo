@@ -1,4 +1,5 @@
 class PlayersController < ApplicationController
+  before_action :set_player, only: %i[destroy]
   def index
     render json: Player.all, status: :ok
   end
@@ -12,8 +13,16 @@ class PlayersController < ApplicationController
     end
   end
 
+  def destroy
+    @player.destroy
+    render json: {message: "Player deleted successfully"}, status: :ok
+  end
   private
   
+  def set_player
+    @player = Player.find(params[:id])
+  end
+
   def player_params
     params.require(:player).permit(:name)
   end
