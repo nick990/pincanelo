@@ -1,7 +1,11 @@
 class PlayersController < ApplicationController
-  before_action :set_player, only: %i[destroy]
+  before_action :set_player, only: %i[destroy show]
   def index
     render json: Player.all, status: :ok
+  end
+
+  def show
+    render json: @player, status: :ok
   end
 
   def create
