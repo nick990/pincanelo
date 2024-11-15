@@ -5,11 +5,11 @@ class PlayersController < ApplicationController
   end
 
   def show
-    render json: @player, status: :ok
+    render json: @player, status: :ok, serializer: PlayerCompleteSerializer
   end
 
   def create
-    player = Player.create(player_params)
+    player = Player.new(create_params)
     if player.save
       render json: player, status: :created
     else
@@ -27,7 +27,8 @@ class PlayersController < ApplicationController
     @player = Player.find(params[:id])
   end
 
-  def player_params
+  def create_params
     params.require(:player).permit(:name)
   end
+
 end
