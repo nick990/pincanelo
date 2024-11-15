@@ -1,5 +1,5 @@
 class PlayersController < ApplicationController
-  before_action :set_player, only: %i[destroy show]
+  before_action :set_player, only: %i[destroy show update update_elo_rating]
   def index
     render json: Player.all.order(elo_rating: :desc), status: :ok
   end
@@ -17,6 +17,22 @@ class PlayersController < ApplicationController
     end
   end
 
+  def update
+    if @player.update(update_params)
+      render json: @player, status: :ok
+    else
+      render json: { errors: @player.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def update_elo_rating
+    dto = UpdateEloRatingDto.new(params)
+    if dto.valid? && @player.update(elo_rating: params[:elo_rating])
+    else
+      render json: { errors: dto.errors.merge(@player.errors).full_messages }, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     @player.destroy
     render json: {message: "Player deleted successfully"}, status: :ok
@@ -30,5 +46,11 @@ class PlayersController < ApplicationController
   def create_params
     params.require(:player).permit(:name)
   end
+
+  def update_params
+    params.require(:player).permit(:elo_rating,:name)
+  end
+
+
 
 end
