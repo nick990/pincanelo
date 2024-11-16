@@ -27,9 +27,13 @@ class PlayersController < ApplicationController
 
   def update_elo_rating
     dto = UpdateEloRatingDto.new(params)
-    if dto.valid? && @player.update(elo_rating: params[:elo_rating])
+    if !dto.valid?
+      render json: {errors: dto.errors.full_messages }, status: :unprocessable_entity
+      return
+    end
+    if @player.update(elo_rating: params[:elo_rating])
     else
-      render json: { errors: dto.errors.merge(@player.errors).full_messages }, status: :unprocessable_entity
+      render json: {errors: @player.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
